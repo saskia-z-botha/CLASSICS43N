@@ -1392,7 +1392,14 @@ function updateNavButtons() {
   const prev = document.getElementById('nav-prev');
   const next = document.getElementById('nav-next');
   prev.classList.toggle('nav-btn-invisible', idx === 0);
-  next.classList.toggle('nav-btn-invisible', idx === EXHIBITS.length - 1);
+  if (idx === EXHIBITS.length - 1) {
+    next.textContent = '← Return to Archive';
+    next.onclick = returnToArchive;
+  } else {
+    next.textContent = 'Next →';
+    next.onclick = () => navigateExhibit(1);
+  }
+  next.classList.remove('nav-btn-invisible');
   document.getElementById('nav-position').textContent = (idx + 1) + ' / ' + EXHIBITS.length;
 }
 
