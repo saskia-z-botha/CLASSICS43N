@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community. Identity. Stability.</title>
+<style>
+
+/* ─── Reset & Variables ─────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ws-bg:      #edf0f4;
+  --ws-text:    #1a2333;
+  --ws-accent:  #2d5986;
+  --ws-muted:   #7a8fa8;
+  --ws-border:  #c8d2de;
+  --ws-faint:   #f5f7fa;
+
+  --ar-bg:      #f4e8d0;
+  --ar-paper:   #ede0c0;
+  --ar-deep:    #e5d4a8;
+  --ar-text:    #1c160c;
+  --ar-accent:  #7c3a1e;
+  --ar-muted:   #8a7460;
+  --ar-border:  #c9a878;
+  --ar-ink:     #0e0904;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--ws-bg);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: var(--ws-text);
+}
+
+/* ─── Screen Utilities ──────────────────────────────────────────── */
+
+.screen { min-height: 100vh; }
+.screen-hidden { display: none !important; }
+
+/* ─── ENTRY SCREEN ──────────────────────────────────────────────── */
+
+#entry-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--ws-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-image:
+    repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0,0,20,0.012) 3px, rgba(0,0,20,0.012) 4px
+    );
+}
+
+#entry-screen.dissolving {
+  animation: screenBreakup 1.6s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes screenBreakup {
+  0%   { opacity: 1; filter: none; transform: none; }
+  12%  { filter: brightness(2.5) saturate(0); transform: translateX(3px); }
+  18%  { filter: none; transform: translateX(-2px); }
+  25%  { filter: hue-rotate(220deg) brightness(1.4); transform: translateX(0); }
+  35%  { filter: none; opacity: 0.8; }
+  50%  { filter: brightness(4) saturate(0); opacity: 0.5; transform: scale(1.015); }
+  65%  { filter: none; opacity: 0.25; }
+  80%  { filter: brightness(6); opacity: 0.1; }
+  100% { opacity: 0; }
+}
+
+.ws-seal {
+  width: 72px; height: 72px;
+  border: 1.5px solid var(--ws-accent);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.75rem;
+  position: relative; opacity: 0.65;
+}
+.ws-seal::before {
+  content: '';
+  position: absolute; inset: 5px;
+  border: 1px solid var(--ws-border);
+  border-radius: 50%;
+}
+.ws-seal-star {
+  width: 26px; height: 26px;
+  background: var(--ws-accent);
+  clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  opacity: 0.9;
+}
+
+.ws-origin {
+  font-size: 0.62rem; letter-spacing: 0.35em;
+  text-transform: uppercase; color: var(--ws-muted);
+  text-align: center; margin-bottom: 1.25rem;
+}
+
+.ws-motto {
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  font-weight: 200; letter-spacing: 0.45em;
+  text-transform: uppercase; color: var(--ws-text);
+  text-align: center; margin-bottom: 0.4rem;
+  animation: mottoGlitch 8s infinite 2s;
+}
+
+@keyframes mottoGlitch {
+  0%,88%,100%  { text-shadow: none; transform: none; }
+  89%  { text-shadow: 3px 0 #e83030, -3px 0 #1a4fff; transform: translateX(2px); }
+  90%  { text-shadow: -2px 0 #e83030, 2px 0 #1a4fff; transform: translateX(-1px); }
+  91%  { text-shadow: none; transform: none; }
+  92%  { text-shadow: 1px 0 #00cc66, -1px 0 #e83030; }
+  93%  { text-shadow: none; transform: translateX(1px); }
+  94%  { text-shadow: none; transform: none; }
+}
+
+.ws-motto-dot { color: var(--ws-accent); }
+
+.ws-year {
+  font-size: 0.65rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--ws-muted);
+  text-align: center; margin-bottom: 2.5rem;
+}
+
+.ws-stats {
+  display: flex; gap: clamp(1.5rem, 4vw, 3.5rem);
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--ws-border);
+  border-bottom: 1px solid var(--ws-border);
+  margin-bottom: 2.5rem;
+}
+.ws-stat { text-align: center; }
+.ws-stat-value {
+  display: block; font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 300; color: var(--ws-accent); letter-spacing: 0.05em;
+}
+.ws-stat-label {
+  display: block; font-size: 0.58rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ws-muted); margin-top: 0.25rem;
+}
+
+.ws-notice {
+  font-size: 0.78rem; letter-spacing: 0.1em;
+  color: var(--ws-muted); text-align: center;
+  max-width: 420px; line-height: 1.9; margin-bottom: 0;
+}
+
+.ws-signal {
+  margin-top: 2.75rem; font-size: 0.62rem;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--ws-muted); opacity: 0;
+  animation: fadeUp 0.6s ease 3.5s forwards, signalFlicker 5s infinite 4.5s;
+}
+.ws-signal::before { content: '[ '; }
+.ws-signal::after  { content: ' ]'; }
+
+@keyframes fadeUp {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 0.55; transform: translateY(0); }
+}
+@keyframes signalFlicker {
+  0%,85%,100%  { opacity: 0.55; transform: none; }
+  86%  { opacity: 0.1; transform: translateX(3px); color: #c02020; }
+  87%  { opacity: 0.7; transform: translateX(-1px); }
+  88%  { opacity: 0.3; transform: none; }
+  89%  { opacity: 0.65; color: var(--ws-muted); }
+  90%  { opacity: 0; transform: translateX(2px); }
+  91%  { opacity: 0.55; transform: none; }
+}
+
+#enter-btn {
+  display: inline-block; margin-top: 1.25rem;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.6rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--ws-border);
+  padding: 0; opacity: 0;
+  animation: fadeUp 0.5s ease 5.5s forwards;
+  transition: color 0.3s;
+}
+#enter-btn:hover {
+  color: var(--ws-accent);
+  animation: fadeUp 0.5s ease 5.5s forwards, enterHoverGlitch 0.3s infinite;
+}
+@keyframes enterHoverGlitch {
+  0%,90%,100%  { text-shadow: none; }
+  91%  { text-shadow: 2px 0 #e83030, -2px 0 #1a4fff; }
+  95%  { text-shadow: none; }
+}
+
+
+/* ─── ARCHIVE SCREEN ────────────────────────────────────────────── */
+
+#archive-screen {
+  background: var(--ar-bg);
+  font-family: Georgia, 'Palatino Linotype', serif;
+  color: var(--ar-text);
+  padding-bottom: 5rem;
+}
+
+#archive-screen.fade-in {
+  animation: archiveFadeIn 1.2s ease both;
+}
+
+@keyframes archiveFadeIn {
+  0%   { opacity: 0; transform: translateY(18px); filter: brightness(1.8) saturate(0); }
+  30%  { filter: brightness(1.2) saturate(0.3); }
+  100% { opacity: 1; transform: translateY(0); filter: none; }
+}
+
+.archive-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem;
+}
+
+/* Archive header */
+.archive-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--ar-border);
+}
+
+.archive-stamp {
+  display: inline-block;
+  border: 1.5px solid var(--ar-accent);
+  color: var(--ar-accent);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.58rem; letter-spacing: 0.32em;
+  text-transform: uppercase; padding: 0.3rem 0.85rem;
+  margin-bottom: 1.75rem;
+  transform: rotate(-1.2deg); opacity: 0.8;
+}
+
+.archive-title {
+  font-size: clamp(1.6rem, 4vw, 2.7rem);
+  font-weight: normal; color: var(--ar-ink);
+  letter-spacing: 0.04em; margin-bottom: 1.25rem;
+  line-height: 1.2;
+}
+
+.archive-curator {
+  font-size: 0.88rem; line-height: 1.85;
+  color: var(--ar-muted); font-style: italic;
+  max-width: 640px; margin: 0 auto;
+}
+.archive-curator p + p { margin-top: 0.75rem; }
+
+.archive-question {
+  margin-top: 1.1rem;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--ar-accent);
+  font-family: Georgia, serif;
+  line-height: 1.5;
+}
+
+/* Task guide */
+.task-guide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px dashed var(--ar-border);
+  background: rgba(255,255,255,0.25);
+}
+
+.task-step {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--ar-muted);
+  text-transform: uppercase;
+}
+
+.task-num {
+  color: var(--ar-accent);
+  font-weight: bold;
+  opacity: 0.75;
+}
+
+/* Progress */
+.archive-progress {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.progress-label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.6rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ar-muted);
+}
+.progress-track {
+  width: 220px; height: 2px;
+  background: var(--ar-border);
+  margin: 0.55rem auto 0; overflow: hidden;
+}
+.progress-bar {
+  height: 100%; background: var(--ar-accent);
+  width: 0%; transition: width 0.6s ease;
+}
+
+/* Exhibit grid */
+.exhibit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.exhibit-card {
+  background: var(--ar-paper);
+  border: 1px solid var(--ar-border);
+  padding: 1.4rem 1.4rem 1.6rem;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.1), inset 0 0 40px rgba(100,60,10,0.04);
+  overflow: hidden;
+}
+
+.exhibit-card::after {
+  content: '';
+  position: absolute; bottom: 0; right: 0;
+  width: 0; height: 0; border-style: solid;
+  border-width: 0 0 18px 18px;
+  border-color: transparent transparent var(--ar-bg) transparent;
+  filter: drop-shadow(-1px -1px 1px rgba(0,0,0,0.12));
+}
+
+.exhibit-card:nth-child(3n+1) { transform: rotate(-0.4deg); }
+.exhibit-card:nth-child(3n+2) { transform: rotate(0.3deg); }
+.exhibit-card:nth-child(3n)   { transform: rotate(-0.25deg); }
+
+.exhibit-card:hover {
+  transform: rotate(0deg) translateY(-4px) !important;
+  box-shadow: 4px 8px 20px rgba(0,0,0,0.15), inset 0 0 40px rgba(100,60,10,0.07);
+}
+
+.exhibit-card.visited { border-color: rgba(124,58,30,0.45); }
+
+.card-icon {
+  color: var(--ar-muted);
+  opacity: 0.55;
+  margin-bottom: 0.85rem;
+  display: block;
+}
+
+.card-number {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.58rem; letter-spacing: 0.2em;
+  color: var(--ar-muted); text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.card-examined {
+  color: var(--ar-accent); font-size: 0.55rem;
+  opacity: 0; transition: opacity 0.4s;
+}
+.exhibit-card.visited .card-examined { opacity: 1; }
+
+.card-title {
+  font-size: 1.25rem; font-weight: normal;
+  color: var(--ar-ink); margin-bottom: 0.4rem;
+  letter-spacing: 0.015em;
+}
+
+.card-subtitle {
+  font-size: 0.8rem; color: var(--ar-muted);
+  font-style: italic; line-height: 1.5;
+}
+
+.card-teaser {
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--ar-border);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--ar-accent);
+  opacity: 0.7;
+}
+
+/* ─── WHAT REMAINS ──────────────────────────────────────────────── */
+
+#what-remains {
+  display: none;
+  margin-top: 3.5rem;
+  padding-top: 3rem;
+  border-top: 1.5px solid var(--ar-border);
+  animation: archiveFadeIn 1s ease both;
+}
+
+.wr-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.wr-title {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: normal; color: var(--ar-ink);
+  margin-bottom: 0.75rem; letter-spacing: 0.04em;
+}
+
+.wr-note {
+  font-size: 0.85rem; color: var(--ar-muted);
+  font-style: italic; max-width: 580px;
+  margin: 0 auto; line-height: 1.75;
+}
+
+.wr-field {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+
+/* ─── EXHIBIT SCREEN ────────────────────────────────────────────── */
+
+#exhibit-screen {
+  background: var(--ar-bg);
+  font-family: Georgia, 'Palatino Linotype', serif;
+  color: var(--ar-text);
+  min-height: 100vh;
+}
+
+#exhibit-screen.slide-in {
+  animation: exhibitSlideIn 0.55s ease both;
+}
+
+@keyframes exhibitSlideIn {
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.exhibit-wrap {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+/* Back button */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  background: none; border: none; cursor: pointer;
+  font-family: Georgia, serif; font-size: 0.8rem;
+  font-style: italic; color: var(--ar-muted);
+  padding: 0; margin-bottom: 2.75rem; transition: color 0.2s;
+}
+.back-btn:hover { color: var(--ar-accent); }
+.back-arrow { font-style: normal; }
+
+/* Exhibit header */
+.exhibit-accession {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.6rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ar-muted);
+  margin-bottom: 0.75rem;
+}
+
+.exhibit-title {
+  font-size: clamp(1.9rem, 5vw, 2.9rem);
+  font-weight: normal; color: var(--ar-ink);
+  margin-bottom: 0.45rem;
+  letter-spacing: 0.02em; line-height: 1.15;
+}
+
+.exhibit-subtitle {
+  font-size: 0.95rem; color: var(--ar-muted);
+  font-style: italic; line-height: 1.6;
+  padding-bottom: 2rem; margin-bottom: 2rem;
+  border-bottom: 1px solid var(--ar-border);
+}
+
+/* Artifact image frame */
+.artifact-frame {
+  margin-bottom: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.artifact-paper {
+  background: var(--ar-deep);
+  border: 1px solid var(--ar-border);
+  padding: 1.75rem 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  box-shadow: 3px 4px 12px rgba(0,0,0,0.1);
+  color: var(--ar-muted);
+  position: relative;
+}
+
+.artifact-paper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--ar-border), transparent);
+  opacity: 0.6;
+}
+
+.artifact-caption {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ar-muted);
+  opacity: 0.55;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+/* Step label */
+.step-label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.57rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ar-muted);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ar-border);
+  opacity: 0.5;
+}
+
+/* Curatorial note */
+.curatorial-block {
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 2rem;
+  border-top: 1px solid var(--ar-border);
+  border-bottom: 1px solid var(--ar-border);
+}
+
+.curatorial-text {
+  font-size: 0.9rem;
+  line-height: 1.82;
+  color: var(--ar-muted);
+  font-style: italic;
+}
+
+/* Evidence block */
+.evidence-block {
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.4rem;
+  background: rgba(255,255,255,0.22);
+  border: 1px solid var(--ar-border);
+}
+
+.evidence-type-badge {
+  display: inline-block;
+  background: var(--ar-accent);
+  color: #f5e8d0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.evidence-list {
+  list-style: none;
+  margin-bottom: 0.75rem;
+}
+
+.evidence-list li {
+  font-size: 0.87rem;
+  line-height: 1.72;
+  color: var(--ar-text);
+  padding: 0.6rem 0 0.6rem 1rem;
+  border-left: 2px solid var(--ar-border);
+}
+
+.evidence-list li + li {
+  border-top: 1px solid rgba(201,168,120,0.35);
+}
+
+.reflection-question {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ar-accent);
+  line-height: 1.65;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--ar-border);
+}
+
+/* Quote section */
+.quote-block {
+  background: var(--ar-deep);
+  border-left: 3px solid var(--ar-accent);
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+.quote-placeholder-text {
+  display: block; font-size: 0.9rem;
+  font-style: italic; color: var(--ar-muted);
+  line-height: 1.7;
+  border: 1px dashed var(--ar-border);
+  padding: 0.65rem 0.9rem;
+  background: rgba(255,255,255,0.3);
+  margin-bottom: 0.5rem;
+}
+.quote-instruction {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.57rem; letter-spacing: 0.12em;
+  color: var(--ar-border);
+}
+
+/* Analysis section */
+.analysis-block { margin-bottom: 2rem; }
+.analysis-display {
+  font-size: 0.92rem; line-height: 1.82;
+  color: var(--ar-text); min-height: 72px;
+  padding: 0.8rem 1rem;
+  background: rgba(255,255,255,0.28);
+  border: 1px solid var(--ar-border);
+}
+.analysis-display.placeholder-state { color: var(--ar-muted); font-style: italic; }
+.analysis-textarea {
+  display: none; width: 100%; min-height: 160px;
+  font-family: Georgia, serif; font-size: 0.92rem;
+  line-height: 1.82; color: var(--ar-text);
+  background: rgba(255,255,255,0.65);
+  border: 1px solid var(--ar-accent);
+  padding: 0.8rem 1rem; resize: vertical; outline: none;
+}
+.analysis-textarea:focus { background: rgba(255,255,255,0.9); }
+
+/* Connections block */
+.connections-block {
+  margin-top: 2.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ar-border);
+  margin-bottom: 1.5rem;
+}
+
+.connections-label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.57rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--ar-muted);
+  margin-bottom: 0.9rem;
+}
+
+.connection-item {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  margin-bottom: 0.65rem;
+  cursor: pointer;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid transparent;
+  transition: border-color 0.2s, background 0.2s;
+  border-radius: 1px;
+}
+
+.connection-item:hover {
+  border-color: var(--ar-border);
+  background: rgba(255,255,255,0.3);
+}
+
+.connection-arrow {
+  color: var(--ar-accent);
+  font-style: normal;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.connection-body {}
+
+.connection-title {
+  font-size: 0.88rem;
+  color: var(--ar-accent);
+  font-style: italic;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.connection-desc {
+  font-size: 0.78rem;
+  color: var(--ar-muted);
+  line-height: 1.5;
+}
+
+/* Exhibit navigation */
+.exhibit-nav {
+  display: flex;
+  align-items: center; justify-content: space-between;
+  margin-top: 2.5rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--ar-border);
+}
+.nav-position {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.6rem; letter-spacing: 0.22em;
+  color: var(--ar-muted); text-transform: uppercase;
+}
+.nav-btn-invisible { visibility: hidden; pointer-events: none; }
+
+/* Stamp buttons */
+.btn-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.7rem;
+}
+
+.btn-stamp {
+  background: none;
+  border: 1px solid var(--ar-accent);
+  color: var(--ar-accent);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.6rem; letter-spacing: 0.22em;
+  text-transform: uppercase; padding: 0.4rem 1rem;
+  cursor: pointer; transition: background 0.18s, color 0.18s;
+}
+.btn-stamp:hover {
+  background: var(--ar-accent);
+  color: var(--ar-paper);
+}
+.btn-stamp.muted {
+  border-color: var(--ar-muted);
+  color: var(--ar-muted);
+}
+.btn-stamp.muted:hover {
+  background: var(--ar-muted);
+  color: var(--ar-paper);
+}
+
+
+/* ─── MOBILE ────────────────────────────────────────────────────── */
+
+@media (max-width: 580px) {
+  .ws-stats { gap: 1.25rem; flex-wrap: wrap; }
+  .exhibit-grid { grid-template-columns: 1fr; }
+  .archive-wrap { padding: 2.5rem 1rem; }
+  .exhibit-wrap { padding: 2rem 1rem 4rem; }
+  .ws-motto { letter-spacing: 0.25em; }
+  .task-guide { flex-direction: column; align-items: flex-start; }
+  .artifact-paper { padding: 1.25rem 1.5rem 1rem; }
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ar-bg); }
+::-webkit-scrollbar-thumb { background: var(--ar-border); border-radius: 3px; }
+
+</style>
+</head>
+<body>
+
+
+<!-- ═══════════════════════════════════════════════
+     ENTRY SCREEN
+══════════════════════════════════════════════════ -->
+<div id="entry-screen" class="screen">
+
+  <div class="ws-seal">
+    <div class="ws-seal-star"></div>
+  </div>
+
+  <h1 class="ws-motto">
+    Community<span class="ws-motto-dot">.</span>&nbsp;
+    Identity<span class="ws-motto-dot">.</span>&nbsp;
+    Stability<span class="ws-motto-dot">.</span>
+  </h1>
+
+  <div class="ws-stats">
+    <div class="ws-stat">
+      <span class="ws-stat-value">0</span>
+      <span class="ws-stat-label">Recorded Incidents</span>
+    </div>
+    <div class="ws-stat">
+      <span class="ws-stat-value">100%</span>
+      <span class="ws-stat-label">Soma Distribution</span>
+    </div>
+    <div class="ws-stat">
+      <span class="ws-stat-value">∞</span>
+      <span class="ws-stat-label">Stability Maintained</span>
+    </div>
+  </div>
+
+  <div class="ws-signal">UNAUTHORISED SIGNAL DETECTED — SECTOR 9</div>
+
+  <button id="enter-btn" onclick="enterArchive()">→ follow signal</button>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     ARCHIVE SCREEN
+══════════════════════════════════════════════════ -->
+<div id="archive-screen" class="screen screen-hidden">
+  <div class="archive-wrap">
+
+    <div class="archive-header">
+      <div class="archive-stamp">Recovered Document — Restricted Access</div>
+      <h2 class="archive-title">What Was Erased</h2>
+      <div class="archive-curator">
+        <p>The World State did not destroy the past carelessly. It erased it with precision — identifying what threatened stability and removing it, leaving no visible wound. These ten exhibits document what was taken and the traces that survived.</p>
+        <p class="archive-question">On what basis do we reconstruct a past that was deliberately destroyed?</p>
+      </div>
+    </div>
+
+
+    <div class="archive-progress">
+      <div class="progress-label">Exhibits examined: <span id="visited-count">0</span> / 10</div>
+      <div class="progress-track">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="exhibit-grid" id="exhibit-grid">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- What Remains -->
+    <div id="what-remains">
+      <div class="wr-header">
+        <h3 class="wr-title">What Remains</h3>
+      </div>
+      <div class="wr-field">
+        <div class="analysis-display" id="wr-display">Archeology is the process of working with what remains, and I wanted to explore what happens when the remains are erased or curated. This project was interesting to me because I was analyzing the future with a missing past, with the past in the novel being our present today. The past haunts the present and the present haunts the future, so it was interesting to consider why the World State might choose to remove certain things, and what remains even after attempts at erasure. When analyzing from an Archeological Imagination perspective, I found myself largely reflecting on what it means to be human. In Brave New World, the World State attempts to make people as similar as possible, removing individuality. Additionally, a lot of what they aim to erase (music, poetry, Shakespeare, God) are linked to provoking emotion. Many of these emotions are also linked to memory. For example, in the case of music, songwriters share their memories as music which provokes emotion in others. As such, I would argue that embracing emotion and our memories are a large part of what makes us human. The past is part of what makes us human too: the past, and working with what remains, is an especially strong way to provoke emotion and memory.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     EXHIBIT SCREEN
+══════════════════════════════════════════════════ -->
+<div id="exhibit-screen" class="screen screen-hidden">
+  <div class="exhibit-wrap">
+
+    <button class="back-btn" onclick="returnToArchive()">← Return to Archive</button>
+
+    <div class="exhibit-accession" id="ex-accession"></div>
+    <h2 class="exhibit-title" id="ex-title"></h2>
+    <div class="exhibit-subtitle" id="ex-subtitle"></div>
+
+    <!-- Artifact image -->
+    <div class="artifact-frame">
+      <div class="artifact-paper">
+        <div id="ex-artifact-svg"></div>
+      </div>
+      <div class="artifact-caption" id="ex-artifact-caption"></div>
+    </div>
+
+    <!-- Analysis -->
+    <div class="step-label">Analysis</div>
+    <div class="analysis-block">
+      <div class="analysis-display" id="ex-display"></div>
+    </div>
+
+    <!-- Connections -->
+    <div class="connections-block">
+      <div class="connections-label">Related Exhibits</div>
+      <div id="ex-connections"></div>
+    </div>
+
+    <div class="exhibit-nav">
+      <button class="btn-stamp muted" id="nav-prev" onclick="navigateExhibit(-1)">← Prev</button>
+      <span class="nav-position" id="nav-position">1 / 10</span>
+      <button class="btn-stamp muted" id="nav-next" onclick="navigateExhibit(1)">Next →</button>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+
+/* ─── Artifact SVGs ─────────────────────────────────────────────── */
+
+const ARTIFACT_SVGS = {
+
+  marriage: `<svg viewBox="0 0 220 110" width="220" height="110" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="78" cy="52" r="34" fill="none" stroke="currentColor" stroke-width="2" opacity="0.55"/>
+    <circle cx="142" cy="52" r="34" fill="none" stroke="currentColor" stroke-width="2" opacity="0.55"/>
+    <path d="M110,22 A34,34 0 0,1 110,82 A34,34 0 0,1 110,22" fill="currentColor" opacity="0.06"/>
+    <circle cx="78" cy="18" r="4" fill="currentColor" opacity="0.4"/>
+    <circle cx="142" cy="18" r="4" fill="currentColor" opacity="0.4"/>
+    <line x1="68" y1="52" x2="76" y2="52" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="2,3"/>
+    <line x1="144" y1="52" x2="152" y2="52" stroke="currentColor" stroke-width="0.8" opacity="0.3" stroke-dasharray="2,3"/>
+  </svg>`,
+
+  museums: `<svg viewBox="0 0 220 120" width="220" height="120" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="110,8 20,36 200,36" fill="currentColor" opacity="0.22"/>
+    <rect x="20" y="36" width="180" height="7" fill="currentColor" opacity="0.45"/>
+    <rect x="30" y="43" width="13" height="56" fill="currentColor" opacity="0.28"/>
+    <rect x="62" y="43" width="13" height="56" fill="currentColor" opacity="0.28"/>
+    <rect x="94" y="43" width="13" height="56" fill="currentColor" opacity="0.28"/>
+    <rect x="126" y="43" width="13" height="56" fill="currentColor" opacity="0.28"/>
+    <rect x="158" y="43" width="13" height="56" fill="currentColor" opacity="0.28"/>
+    <rect x="177" y="43" width="13" height="56" fill="currentColor" opacity="0.28"/>
+    <rect x="20" y="99" width="180" height="7" fill="currentColor" opacity="0.45"/>
+    <rect x="82" y="55" width="38" height="44" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="30" y1="99" x2="36" y2="68" stroke="currentColor" stroke-width="0.8" opacity="0.2" stroke-dasharray="3,4"/>
+  </svg>`,
+
+  shakespeare: `<svg viewBox="0 0 220 120" width="220" height="120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M110,14 L28,24 L28,100 L110,110 L192,100 L192,24 Z" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.55"/>
+    <line x1="110" y1="14" x2="110" y2="110" stroke="currentColor" stroke-width="1.5" opacity="0.55"/>
+    <line x1="40" y1="40" x2="98" y2="37" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <line x1="40" y1="49" x2="98" y2="46" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <line x1="40" y1="58" x2="98" y2="55" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <line x1="40" y1="67" x2="90" y2="64" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <line x1="40" y1="76" x2="98" y2="73" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <line x1="40" y1="85" x2="82" y2="82" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <line x1="122" y1="37" x2="180" y2="40" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+    <line x1="122" y1="46" x2="180" y2="49" stroke="currentColor" stroke-width="0.4" opacity="0.25"/>
+    <line x1="122" y1="55" x2="180" y2="58" stroke="currentColor" stroke-width="0.4" opacity="0.2"/>
+    <line x1="122" y1="64" x2="165" y2="67" stroke="currentColor" stroke-width="0.4" opacity="0.15"/>
+    <text x="154" y="42" font-family="Georgia,serif" font-size="7" fill="currentColor" opacity="0.2" font-style="italic">access</text>
+    <text x="148" y="51" font-family="Georgia,serif" font-size="7" fill="currentColor" opacity="0.15" font-style="italic">restricted</text>
+    <path d="M178,26 C173,36 166,52 163,74" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M178,26 C175,32 170,44 165,64 C172,50 178,36 178,26 Z" fill="currentColor" opacity="0.28"/>
+  </svg>`,
+
+  music: `<svg viewBox="0 0 220 110" width="220" height="110" xmlns="http://www.w3.org/2000/svg">
+    <line x1="18" y1="38" x2="202" y2="38" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+    <line x1="18" y1="50" x2="202" y2="50" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+    <line x1="18" y1="62" x2="202" y2="62" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+    <line x1="18" y1="74" x2="202" y2="74" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+    <line x1="18" y1="86" x2="202" y2="86" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+    <ellipse cx="40" cy="78" rx="8" ry="5.5" fill="currentColor" opacity="0.65" transform="rotate(-18 40 78)"/>
+    <line x1="48" y1="75" x2="48" y2="42" stroke="currentColor" stroke-width="1.5" opacity="0.65"/>
+    <ellipse cx="72" cy="66" rx="8" ry="5.5" fill="currentColor" opacity="0.55" transform="rotate(-18 72 66)"/>
+    <line x1="80" y1="63" x2="80" y2="30" stroke="currentColor" stroke-width="1.5" opacity="0.55"/>
+    <ellipse cx="104" cy="80" rx="8" ry="5.5" fill="currentColor" opacity="0.42" transform="rotate(-18 104 80)"/>
+    <line x1="112" y1="77" x2="112" y2="44" stroke="currentColor" stroke-width="1.2" opacity="0.42"/>
+    <ellipse cx="136" cy="70" rx="8" ry="5.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.28" transform="rotate(-18 136 70)"/>
+    <line x1="144" y1="67" x2="144" y2="34" stroke="currentColor" stroke-width="1" opacity="0.28"/>
+    <ellipse cx="168" cy="76" rx="8" ry="5.5" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.14" transform="rotate(-18 168 76)"/>
+  </svg>`,
+
+  poetry: `<svg viewBox="0 0 220 120" width="220" height="120" xmlns="http://www.w3.org/2000/svg">
+    <rect x="38" y="8" width="144" height="104" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="52" y1="26" x2="168" y2="26" stroke="currentColor" stroke-width="0.9" opacity="0.35"/>
+    <rect x="72" y="22" width="42" height="7" fill="currentColor" opacity="0.55"/>
+    <line x1="52" y1="38" x2="168" y2="38" stroke="currentColor" stroke-width="0.9" opacity="0.35"/>
+    <line x1="52" y1="50" x2="138" y2="50" stroke="currentColor" stroke-width="0.9" opacity="0.35"/>
+    <rect x="52" y="46" width="34" height="7" fill="currentColor" opacity="0.55"/>
+    <rect x="100" y="46" width="28" height="7" fill="currentColor" opacity="0.55"/>
+    <line x1="52" y1="62" x2="168" y2="62" stroke="currentColor" stroke-width="0.9" opacity="0.35"/>
+    <line x1="52" y1="74" x2="154" y2="74" stroke="currentColor" stroke-width="0.9" opacity="0.35"/>
+    <rect x="84" y="70" width="48" height="7" fill="currentColor" opacity="0.55"/>
+    <line x1="52" y1="86" x2="168" y2="86" stroke="currentColor" stroke-width="0.9" opacity="0.35"/>
+    <rect x="52" y="82" width="22" height="7" fill="currentColor" opacity="0.55"/>
+    <rect x="62" y="95" width="96" height="14" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+    <text x="110" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="8.5" fill="currentColor" opacity="0.45" letter-spacing="0.18em">REDACTED</text>
+  </svg>`,
+
+  god: `<svg viewBox="0 0 220 120" width="220" height="120" xmlns="http://www.w3.org/2000/svg">
+    <line x1="110" y1="8" x2="110" y2="112" stroke="currentColor" stroke-width="4" opacity="0.13"/>
+    <line x1="38" y1="42" x2="182" y2="42" stroke="currentColor" stroke-width="4" opacity="0.13"/>
+    <line x1="48" y1="18" x2="172" y2="18" stroke="currentColor" stroke-width="5" opacity="0.72"/>
+    <line x1="110" y1="18" x2="110" y2="108" stroke="currentColor" stroke-width="5" opacity="0.72"/>
+    <text x="110" y="115" text-anchor="middle" font-family="'Courier New',monospace" font-size="7.5" fill="currentColor" opacity="0.38" letter-spacing="0.12em">"Our Ford" — replacement authorised AF 142</text>
+  </svg>`,
+
+  questioning: `<svg viewBox="0 0 220 120" width="220" height="120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M80,32 C80,14 90,8 110,8 C130,8 140,20 140,34 C140,52 124,57 110,72 L110,84" fill="none" stroke="currentColor" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+    <circle cx="110" cy="100" r="5.5" fill="currentColor" opacity="0.5"/>
+    <line x1="92" y1="24" x2="96" y2="21" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
+    <line x1="130" y1="36" x2="134" y2="33" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
+    <line x1="107" y1="60" x2="111" y2="57" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
+    <line x1="86" y1="42" x2="88" y2="38" stroke="currentColor" stroke-width="0.7" opacity="0.25"/>
+    <text x="110" y="116" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="currentColor" opacity="0.35" letter-spacing="0.14em">INQUIRY SUSPENDED — AF 179</text>
+  </svg>`,
+
+  emotion: `<svg viewBox="0 0 220 110" width="220" height="110" xmlns="http://www.w3.org/2000/svg">
+    <path d="M62,38 C50,22 28,22 28,42 C28,60 62,76 62,76 C62,76 96,60 96,42 C96,22 74,22 62,38Z" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.65"/>
+    <line x1="104" y1="52" x2="126" y2="52" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+    <polygon points="126,48 134,52 126,56" fill="currentColor" opacity="0.4"/>
+    <polygon points="136,28 156,28 168,42 168,62 156,76 136,76 124,62 124,42" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.45"/>
+    <line x1="136" y1="28" x2="168" y2="76" stroke="currentColor" stroke-width="0.5" opacity="0.2" stroke-dasharray="2,3"/>
+    <line x1="168" y1="28" x2="136" y2="76" stroke="currentColor" stroke-width="0.5" opacity="0.2" stroke-dasharray="2,3"/>
+    <text x="62" y="95" text-anchor="middle" font-family="Georgia,serif" font-size="8" fill="currentColor" opacity="0.38" font-style="italic">natural</text>
+    <text x="148" y="95" text-anchor="middle" font-family="Georgia,serif" font-size="8" fill="currentColor" opacity="0.38" font-style="italic">managed</text>
+  </svg>`,
+
+  science: `<svg viewBox="0 0 220 120" width="220" height="120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M90,10 L90,50 L48,104 L172,104 L130,50 L130,10 Z" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+    <line x1="76" y1="10" x2="144" y2="10" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+    <path d="M64,88 L156,88 L172,104 L48,104 Z" fill="currentColor" opacity="0.12"/>
+    <circle cx="86" cy="95" r="3" fill="currentColor" opacity="0.3"/>
+    <circle cx="110" cy="92" r="2.5" fill="currentColor" opacity="0.3"/>
+    <circle cx="130" cy="96" r="2" fill="currentColor" opacity="0.3"/>
+    <path d="M84,32 C74,48 68,68 62,86" stroke="currentColor" stroke-width="2" fill="none" opacity="0.45" stroke-dasharray="5,4"/>
+    <path d="M136,32 C146,48 152,68 158,86" stroke="currentColor" stroke-width="2" fill="none" opacity="0.45" stroke-dasharray="5,4"/>
+    <rect x="97" y="110" width="26" height="10" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5" rx="1"/>
+    <path d="M101,110 C101,104 119,104 119,110" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+  </svg>`,
+
+  death: `<svg viewBox="0 0 220 120" width="220" height="120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M66,4 L154,4 L110,60 L154,116 L66,116 L110,60 Z" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+    <line x1="66" y1="4" x2="154" y2="4" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+    <line x1="66" y1="116" x2="154" y2="116" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+    <path d="M70,8 L150,8 L116,48 L104,48 Z" fill="currentColor" opacity="0.12"/>
+    <ellipse cx="110" cy="100" rx="30" ry="9" fill="currentColor" opacity="0.22"/>
+    <path d="M80,116 L140,116 L140,100 C128,90 92,90 80,100 Z" fill="currentColor" opacity="0.18"/>
+    <line x1="110" y1="50" x2="110" y2="78" stroke="currentColor" stroke-width="0.6" opacity="0.3" stroke-dasharray="2,4"/>
+  </svg>`
+};
+
+/* ─── Exhibit data ──────────────────────────────────────────────── */
+
+const EXHIBITS = [
+  {
+    id: 'marriage',
+    num: '001',
+    title: 'Marriage',
+    analysis: 'The erasure of marriage evokes questions on the distinction between love and marriage. Love is part of what makes us human, as it gives purpose. However, the World State abolished commitment rather than love, and consequently loyalty and obligation became remnants of the past. With the erasure of marriage, we also see an erasure of love, because love relies heavily on commitment. The pivot between presence and absence is sharp here, as the World State argues that people won\'t grieve what they aren\'t asked to commit to.',
+    subtitle: 'What it meant to belong to one another — and to no one else',
+    artifactCaption: 'Record of conjugal bond — classification withdrawn AF 632',
+    curatorial: 'Marriage was not simply a legal arrangement. It was the act of choosing a single person and saying: you are mine, and I am yours, and this will last. It generated obligations that could not be dissolved by the State, and loyalties that competed directly with the collective. It produced grief — real, unmediated grief — when it ended or when one partner died. For all of these reasons, it had to go. What replaced it was access: frictionless, consequence-free, endlessly available. No one grieves what they were never asked to commit to.',
+    evidenceType: 'Living Memory & Textual',
+    evidence: [
+      'Linda\'s testimony: John\'s mother lived as wife and mother on the Reservation — the only person there who had been conditioned away from these roles and therefore understood exactly what she was missing. Her shame and grief are the archive of what was erased.',
+      'The Director\'s secret: Thomas (the D.H.C.) abandoned Linda on the Reservation after an accident. His visible humiliation when this becomes public demonstrates that family feeling — guilt, paternity, obligation — persists even in a properly conditioned citizen.',
+      'Mustapha Mond\'s lecture (Ch. 3): "Family, monogamy, romance. Everywhere exclusiveness, a focusing of feeling... no leisure from pleasure, not a moment to sit down and think." The precision of his critique reveals how thoroughly the World State understood what it was removing.'
+    ],
+    reflectionQ: 'Our primary witnesses to marriage are a woman the World State considers failed (Linda) and a Controller who has chosen to suppress it (Mond). What does it mean to reconstruct something from the testimony of people on opposite ends of its erasure?',
+    connections: [
+      { id: 'emotion', title: 'Emotion', desc: 'Marriage required the full emotional register — grief, jealousy, love — that the World State designed away.' },
+      { id: 'death', title: 'Death', desc: 'Marriage created obligations to the dying that outlasted the relationship; grief was the price of commitment.' }
+    ],
+    icon: `<svg viewBox="0 0 44 22" width="44" height="22"><circle cx="14" cy="11" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="30" cy="11" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`
+  },
+  {
+    id: 'museums',
+    num: '002',
+    title: 'Museums',
+    analysis: 'Museums are an act of archeological imagination, as they argue that the past is worth preserving, something the World State strongly disagrees with. The past haunts the present, and the World State tries to erase this by having citizens forget about the past and focus on the present. It is impossible to erase history, but in this way the World State prevents people from accessing artifacts from it.',
+    subtitle: 'The buildings that once held time in their hands',
+    artifactCaption: 'Exterior documentation — contents removed to secure storage',
+    curatorial: 'A museum is an argument. It argues that what came before matters — that objects accumulate meaning across generations, that history has a shape worth understanding. The World State could not permit this argument. To preserve is to insist that something was lost. To display is to invite comparison. The museums were not destroyed overnight; they were allowed to empty. The curators were not arrested; they were simply not replaced. The objects were removed to storage. The storage was eventually flooded. Nobody remembers the flood.',
+    evidenceType: 'Material & State Record',
+    evidence: [
+      'Mustapha Mond\'s safe: The Controller possesses forbidden books — locked away as proof of what cannot be shared. The archive of what was destroyed exists; it is simply classified. The archivist and the censor are the same person.',
+      'The Savage Reservation: The Reservation functions as a living museum — preserved not for instruction, but as a quarantine zone. Its very existence demonstrates the World State\'s preference for containment over destruction.',
+      'Mond on history (Ch. 3): "History is bunk." The sentence\'s confidence is the evidence. You only need to say this if someone might disagree — if the argument for history still needs to be answered.'
+    ],
+    reflectionQ: 'The Controller is himself the archivist — he keeps what cannot be shown. What does it mean that our evidence for what was erased comes primarily from the person responsible for erasing it?',
+    connections: [
+      { id: 'shakespeare', title: 'Shakespeare', desc: 'Museums were the buildings; Shakespeare was the content they once held.' },
+      { id: 'science', title: 'Science', desc: 'What a museum does for cultural memory, pure research does for scientific knowledge — both were quarantined rather than destroyed.' }
+    ],
+    icon: `<svg viewBox="0 0 44 32" width="44" height="32"><polygon points="22,3 4,12 40,12" fill="currentColor" opacity="0.5"/><rect x="4" y="12" width="36" height="4" fill="currentColor"/><rect x="7" y="16" width="5" height="13" fill="currentColor" opacity="0.6"/><rect x="17" y="16" width="5" height="13" fill="currentColor" opacity="0.6"/><rect x="27" y="16" width="5" height="13" fill="currentColor" opacity="0.6"/><rect x="32" y="16" width="5" height="13" fill="currentColor" opacity="0.6"/><rect x="4" y="29" width="36" height="3" fill="currentColor"/></svg>`
+  },
+  {
+    id: 'shakespeare',
+    num: '003',
+    title: 'Shakespeare',
+    analysis: 'The erasure of Shakespeare spans beyond just his content: his beliefs about suffering are what make the strongest impact. In the book, John is able to read Shakespeare while everyone else cannot. He is a walking exhibit of what\'s been lost. Shakespeare\'s plays are strongly linked to emotion and the human experience, which is what the World State finds threatening.',
+    subtitle: 'Four hundred years of language, learning to name the unbearable',
+    artifactCaption: 'Complete Works — single surviving copy — restricted access',
+    curatorial: 'The works of Shakespeare survived every plague, every fire, every war — until they met an enemy that did not burn them but simply made them unnecessary. The plays mapped the full interior of human experience: rage, jealousy, ambition, loss, love that destroyed its own object. This was precisely what could not be permitted. Not because the plays were dangerous in themselves, but because reading them carefully taught a habit of mind — the habit of attending to suffering, of believing that suffering had weight and dignity. A citizen conditioned to hold this belief cannot be made fully happy.',
+    evidenceType: 'Textual',
+    evidence: [
+      'John\'s education: The Savage learned to read from a single copy of the Complete Works found by accident on the Reservation. His entire moral and emotional vocabulary is Shakespearean — it is the only language he has for what he feels.',
+      'The Controller\'s copy: Mustapha Mond keeps Shakespeare in his safe alongside the Bible. The works survive, but only in the custody of those empowered to suppress them. Access equals authority.',
+      'John\'s speech throughout the novel: Passages from The Tempest, Othello, Hamlet, and Macbeth surface whenever John encounters something he cannot otherwise name — the text becomes a diagnostic tool for what the World State has made unspeakable.'
+    ],
+    reflectionQ: 'Shakespeare survives through two people: one never properly conditioned (John), one who enforces conditioning (Mond). What does this pairing reveal about the relationship between power and cultural memory?',
+    connections: [
+      { id: 'poetry', title: 'Poetry', desc: 'Shakespeare is the novel\'s supreme evidence that poetry is not ornament but the vehicle for naming the unbearable.' },
+      { id: 'emotion', title: 'Emotion', desc: 'The plays survive because they map the emotional terrain the World State erased — they are an atlas of the forbidden interior.' }
+    ],
+    icon: `<svg viewBox="0 0 40 30" width="40" height="30"><path d="M20,3 L4,7 L4,25 L20,28 L36,25 L36,7 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="20" y1="3" x2="20" y2="28" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="12" x2="17" y2="11" stroke="currentColor" stroke-width="0.9" opacity="0.6"/><line x1="7" y1="17" x2="17" y2="16" stroke="currentColor" stroke-width="0.9" opacity="0.6"/><line x1="23" y1="11" x2="33" y2="12" stroke="currentColor" stroke-width="0.9" opacity="0.6"/><line x1="23" y1="16" x2="33" y2="17" stroke="currentColor" stroke-width="0.9" opacity="0.6"/></svg>`
+  },
+  {
+    id: 'music',
+    num: '004',
+    title: 'Music',
+    analysis: 'Music is another form of expressing feelings and emotion, something the World State seeks to remove. The Synthetic Music which is allowed preserves the sensation of music but removes the emotional element. In the past, music contained a message and could inspire people, but now it has lost the ability to move people. Arts, including music, are part of what makes us human because they enable us to feel.',
+    subtitle: 'Before it was engineered, it was felt',
+    artifactCaption: 'Original notation — discontinued upon introduction of Synthetic Music',
+    curatorial: 'Music survived — in a form. What did not survive was its capacity to disturb. The old music was dissonant; it moved toward resolution and sometimes refused to arrive there. It made demands on the listener. It was written by people in extremity of feeling, and it transmitted that extremity across centuries. What replaced it was Synthetic Music: perfectly calibrated, emotionally inert, designed to produce pleasant sensation without meaning. The difference is the difference between being moved and being massaged. The State preferred citizens who had been massaged.',
+    evidenceType: 'Textual & Living Memory',
+    evidence: [
+      'Helmholtz Watson\'s discontent: The Alpha-Plus emotional engineer is dissatisfied with synthetic music and feelie-writing, though he struggles to articulate why. His restlessness is a trace of what music once demanded of its listeners.',
+      'The Solidarity Service hymns: The parody religious services use music as neurological manipulation — evidence by inversion of what real music once did. The form survives; the function has been reversed.',
+      'Bernard Marx\'s "orgy-porgy" discomfort: Bernard cannot lose himself in the Solidarity Service\'s music the way others do. His inability is a crack in the conditioning — a negative impression of genuine musical experience.'
+    ],
+    reflectionQ: 'We know old music primarily through someone (Helmholtz) who has never heard it but feels its absence. Can you reconstruct something from the shape of a lack?',
+    connections: [
+      { id: 'poetry', title: 'Poetry', desc: 'Both music and poetry make demands on their audience that the World State found incompatible with happiness.' },
+      { id: 'emotion', title: 'Emotion', desc: 'Music in its original form transmitted extremity of feeling across centuries — this is precisely why it had to be neutralised.' }
+    ],
+    icon: `<svg viewBox="0 0 28 38" width="28" height="38"><ellipse cx="8" cy="30" rx="6.5" ry="4.5" fill="currentColor" opacity="0.7" transform="rotate(-18 8 30)"/><line x1="14" y1="27" x2="14" y2="5" stroke="currentColor" stroke-width="1.5"/><path d="M14 5 L24 8 L24 14 L14 11" fill="currentColor" opacity="0.65"/></svg>`
+  },
+  {
+    id: 'poetry',
+    num: '005',
+    title: 'Poetry',
+    analysis: 'Poetry is the form of writing which most embodies art. In the World State, words are supposed to only mean what they say, but poetry is more ambiguous. Ironically, the World State uses hypnopaedia, or a form of sleep mind conditioning, which follows the format of poetry but aims to close minds rather than open them.',
+    subtitle: 'Language that refused to be useful',
+    artifactCaption: 'Manuscript fragment — text classification status: suppressed',
+    curatorial: 'Poetry is language organised to resist easy paraphrase — to mean more, and differently, than it plainly says. This made it intolerable. The conditioning system required words to mean exactly what they said: clear, unambiguous, directional. Poetry undermined this. A citizen who read it with real attention developed a sensitivity to implication, to resonance, to the space between words — and began to notice what was not being said. This was the precise faculty that stability required be removed. Poetry was not banned. It was simply never taught. Within two generations, no one could read it.',
+    evidenceType: 'Textual',
+    evidence: [
+      'Helmholtz\'s experimental rhyme: He writes a poem about solitude — and is immediately reported by students who find the concept of being alone disturbing. The poem itself is evidence that the impulse to write poetry remained, even in a fully conditioned Alpha-Plus.',
+      'The hypnopaedic rhymes: The conditioning system uses rhyme and rhythm — but evacuated of meaning. "A gramme in time saves nine." This is poetry\'s ghost, or its weapon turned against itself. The form survives as a cage.',
+      'John\'s Shakespeare: The Savage\'s ability to find language for his experience through Shakespeare is the novel\'s argument for what poetry does. Lenina\'s parallel inability to name what she feels makes the contrast explicit.'
+    ],
+    reflectionQ: 'The conditioning system uses poetic form (rhyme, rhythm, repetition) for exactly the opposite purpose poetry serves. What does this tell us about how the World State understood — and feared — poetry\'s power?',
+    connections: [
+      { id: 'shakespeare', title: 'Shakespeare', desc: 'John\'s Shakespeare is the novel\'s primary demonstration of what poetry does that paraphrase cannot.' },
+      { id: 'questioning', title: 'Metaphysical Questioning', desc: 'A reader trained on poetry notices what is not being said — the faculty that stability required be removed.' }
+    ],
+    icon: `<svg viewBox="0 0 30 38" width="30" height="38"><path d="M26,3 C22,10 16,18 6,34" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M26,3 C22,8 14,18 8,32 C16,22 23,12 26,3 Z" fill="currentColor" opacity="0.5"/><line x1="6" y1="34" x2="2" y2="38" stroke="currentColor" stroke-width="1"/></svg>`
+  },
+  {
+    id: 'god',
+    num: '006',
+    title: 'God',
+    analysis: 'The World State replaces God rather than completely erasing him. They substitute Ford for God, T for the cross, and Solidarity Services for communion. The idea of religion remains, but the history and emotion are again removed from it. Many people look to God for guidance on their morals and behavior, and this guidance is what the World State effectively removes.',
+    subtitle: 'The name they erased from every wall',
+    artifactCaption: 'Liturgical substitution — "Our Ford" replacing "Our Lord" — authorised AF 142',
+    curatorial: 'Religion was not abolished — it was replaced. Ford took the place of God in the liturgy; the sign of the T replaced the cross; the Solidarity Services supplied the same neurological warmth as communal worship, without the inconvenient metaphysics. What could not be retained was the God who made demands — who posed questions about justice, the soul, and what a life was worth. That God implied a moral order outside the State\'s jurisdiction. He was not killed. He was made redundant. The warmth was preserved. The weight was not.',
+    evidenceType: 'State Record & Textual',
+    evidence: [
+      'Mustapha Mond\'s hidden Bible: The Controller keeps a copy of the Bible in his safe alongside forbidden poetry and history. He has read it, can cite it, and has chosen knowingly to suppress it. He is the novel\'s most informed witness to what was lost — and its most effective agent of loss.',
+      'The Ford/Freud liturgy: "Our Ford" replaces "Our Lord"; the Sign of the T replaces the cross; Solidarity Services parody the Eucharist. Every element of the replacement is a negative impression of what it replaced — a fossil of the original form.',
+      'Mond\'s conversation with John (Ch. 17): "God isn\'t compatible with machinery and scientific medicine and universal happiness. You must make your choice." The Controller frames the erasure as a decision — which means it was once a genuine alternative.'
+    ],
+    reflectionQ: 'Mustapha Mond is perhaps the only person in the World State who has genuinely read the texts he has suppressed. Does that make him a reliable or an unreliable witness to what was lost?',
+    connections: [
+      { id: 'questioning', title: 'Metaphysical Questioning', desc: 'The God who makes demands implies a moral order outside the State\'s jurisdiction — and a habit of asking questions about it.' },
+      { id: 'science', title: 'Science', desc: 'Both religion and science, in their genuine forms, follow evidence wherever it leads — even toward uncomfortable conclusions.' }
+    ],
+    icon: `<svg viewBox="0 0 32 38" width="32" height="38"><line x1="16" y1="3" x2="16" y2="36" stroke="currentColor" stroke-width="2" opacity="0.18"/><line x1="4" y1="16" x2="28" y2="16" stroke="currentColor" stroke-width="2" opacity="0.18"/><line x1="5" y1="7" x2="27" y2="7" stroke="currentColor" stroke-width="2.5"/><line x1="16" y1="7" x2="16" y2="34" stroke="currentColor" stroke-width="2.5"/></svg>`
+  },
+  {
+    id: 'questioning',
+    num: '007',
+    title: 'Metaphysical Questioning',
+    analysis: 'The archeological imagination is a perfect example of metaphysical questioning. We ask what was here before and how it shapes the present. By removing metaphysical questioning, the World State aims to prevent people from asking questions for the sake of intellectual curiosity. They actively try to entertain people so that they don\'t ask these questions, with methods such as Soma.',
+    subtitle: 'The habit of asking why, and not accepting the approved answer',
+    artifactCaption: 'Research file — inquiry suspended — reclassified restricted AF 179',
+    curatorial: 'It is not that citizens of the World State are stupid. They are, in many cases, the products of careful biological and psychological engineering. The point is that they have been designed not to ask certain questions — not because the questions are unanswerable, but because the answers would be destabilising. Why am I this caste and not another? What am I for, beyond my function? Is this happiness, or merely the absence of the capacity to want more? These questions were conditioned away. The Solidarity Services, the soma, the relentless entertainment — all were pharmaceutical against philosophy. Not a cure. A prevention.',
+    evidenceType: 'Living Memory',
+    evidence: [
+      'Mustapha Mond\'s personal history: The Controller reveals he was once a physicist who nearly faced exile for pursuing forbidden research. He chose to become a Controller instead. His personal history is a fossil of the questioning mind — preserved inside the institution that suppresses it.',
+      'Helmholtz Watson\'s restlessness: Watson knows something is missing in his work but cannot find the words for it. His discomfort is the questioning instinct trying to surface through its own suppression — a trace of the faculty that was designed away.',
+      'John\'s challenge to Mond (Ch. 17): "But I don\'t want comfort. I want God, I want poetry, I want real danger, I want freedom, I want goodness, I want sin." Mond\'s precise, reasoned response demonstrates that the questions were once thinkable — and that they are still, in his keeping.'
+    ],
+    reflectionQ: 'Mond chose stability over inquiry. He still knows the questions. What does it mean that the person who most completely understands what was erased is also responsible for erasing it?',
+    connections: [
+      { id: 'god', title: 'God', desc: 'Mond\'s disclosure that he keeps a Bible links forbidden belief and forbidden inquiry in the same safe.' },
+      { id: 'science', title: 'Science', desc: 'The scientific attitude and the philosophical attitude share the same root: the willingness to follow evidence wherever it leads.' }
+    ],
+    icon: `<svg viewBox="0 0 26 38" width="26" height="38"><path d="M5,13 C5,6 9,2 13,2 C17,2 21,6 21,13 C21,19 16,21 13,25 L13,29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="35" r="2.5" fill="currentColor"/></svg>`
+  },
+  {
+    id: 'emotion',
+    num: '008',
+    title: 'Emotion',
+    analysis: 'Instead of being completely erased, emotion is managed by the World State. This is because they want their citizens to feel happy without feeling darker emotions. Emotions, even the dark ones, are a large part of what makes us human. In the book, John\'s breakdown is a vivid example of emotion that has been lost, because no one else is able to feel the way he does.',
+    subtitle: 'The weather inside the body, that could not be permitted to rain',
+    artifactCaption: 'Comparative diagram — natural versus managed affective state',
+    curatorial: 'Emotion was not erased — it was managed. There is a difference, and it is important. Managed emotion remains available as sensation: pleasure, mild enthusiasm, the warmth of belonging. What was removed was its depth and its dark range. Grief, rage, longing, the specific agony of loving something you know you will lose — these were identified as threats to productivity and social stability, and they were pharmacologically neutralised. Soma for the crisis; conditioning for the long term. A citizen whose emotional range has been reduced to the major keys can still report feeling happy. They simply do not know what they are not feeling.',
+    evidenceType: 'Living Memory',
+    evidence: [
+      'John\'s grief at Linda\'s death: The death-conditioned children eating chocolate éclair around Linda\'s bed while John weeps is the novel\'s most direct confrontation of what managed emotion has replaced. His grief is legible to the reader and wholly incomprehensible to the nurses.',
+      'Bernard Marx\'s persistent unease: Bernard is slightly off-specification — a bottling accident, rumoured. His low-grade emotional discomfort cannot be fully suppressed by soma. He is a data point demonstrating the limits of conditioning.',
+      'Lenina\'s confusion: When John tells her he loves her, she cannot parse the statement as he means it. Her response is entirely physical. The emotional register he is speaking in does not exist in her vocabulary.'
+    ],
+    reflectionQ: 'We know what emotions were through characters who were either never properly conditioned (John) or whose conditioning slightly failed (Bernard). What does this suggest about the long-term stability of emotional engineering as a project?',
+    connections: [
+      { id: 'death', title: 'Death', desc: 'Only someone who can grieve knows what it means to lose something — the novel\'s argument runs through John\'s witness at Linda\'s bedside.' },
+      { id: 'marriage', title: 'Marriage', desc: 'Marriage was abolished partly because the grief it generated — at abandonment, at death — was incompatible with stability.' }
+    ],
+    icon: `<svg viewBox="0 0 40 34" width="40" height="34"><path d="M20,28 C14,22 2,16 2,9 C2,4 5,2 9,2 C12,2 15,4 20,7 C25,4 28,2 31,2 C35,2 38,4 38,9 C38,16 26,22 20,28 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`
+  },
+  {
+    id: 'science',
+    num: '009',
+    title: 'Science',
+    analysis: 'Science is heavily present in the World State (starting from birth with the Bokanovsky\'s Process), but the scientific attitude of enthusiastically researching and following evidence is removed. Research was quietly defunded, and so while the World State has strong technology, research advancements are limited to specific approved fields.',
+    subtitle: 'The method that kept arriving at inconvenient truths',
+    artifactCaption: 'Research file — pure inquiry — reclassified and sealed AF 203',
+    curatorial: 'Science did not disappear. It was contained. The World State employs scientists — skilled, trained, productive — but it does not permit the attitude of science: the willingness to follow evidence wherever it leads, even when it leads somewhere uncomfortable. Pure research was quietly defunded. The questions that mattered were replaced by the questions that were useful. A researcher who asked why the caste system produced the cognitive outcomes it did would be, sooner or later, reassigned. Not punished. Reassigned. The result is a technology without a philosophy: immense capacity for control, and zero tolerance for self-examination.',
+    evidenceType: 'State Record & Living Memory',
+    evidence: [
+      'Mond\'s disclosure: The Controller reveals that pure research results are not destroyed but locked away. He describes a promising study on the reintroduction of viviparous reproduction — shelved indefinitely. The archive of suppressed science exists; it is simply inaccessible.',
+      'Mond\'s personal history: "I was a physicist. I wanted to know... I was given the choice: to be sent to an island, or to become a Controller." The biographical fact is a fossil of what science once meant as a vocation — not just a method, but a calling.',
+      'The Bokanovsky Process: The State\'s use of biology to fix, replicate, and eliminate variation is science turned against its own method. Its existence maps, by negation, the science it replaced — the science that pursued the unknown rather than the predetermined.'
+    ],
+    reflectionQ: 'The World State has science without the scientific attitude. Is what they practice still science? And what does your answer reveal about how we define scientific inquiry?',
+    connections: [
+      { id: 'questioning', title: 'Metaphysical Questioning', desc: 'Pure research was not abolished — it was redirected away from questions that mattered. The two suppressions are the same act.' },
+      { id: 'museums', title: 'Museums', desc: 'The suppressed research files and the emptied museums are the same gesture in two different domains.' }
+    ],
+    icon: `<svg viewBox="0 0 30 38" width="30" height="38"><path d="M11,4 L11,18 L3,34 L27,34 L19,18 L19,4 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="4" x2="23" y2="4" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="28" r="2.5" fill="currentColor" opacity="0.45"/><circle cx="18" cy="30" r="2" fill="currentColor" opacity="0.45"/><circle cx="14" cy="26" r="1.5" fill="currentColor" opacity="0.45"/></svg>`
+  },
+  {
+    id: 'death',
+    num: '010',
+    title: 'Death',
+    analysis: 'Death still happens in the World State, but it is heavily sanitized to remove the emotion around it. Children are conditioned from young not to be afraid of death. In the novel, when Linda dies and John grieves, others around him are confused by this reaction. In class we discussed the past haunting the present, which is clear here. Without death seeming fearful, there isn\'t urgency and the past becomes less haunting because time seems less consequential.',
+    subtitle: 'The one appointment they could not cancel, so they cancelled the memory of it',
+    artifactCaption: 'Mortality processing record — phosphorus recovery logged — emotional response: nil',
+    curatorial: 'Death still occurs in the World State. People age, in their engineered way, and then they stop. What has been erased is not death but the relationship to it — the long human practice of mourning, of reckoning with mortality, of finding meaning in the face of extinction. Children are taken to hospital wards to be death-conditioned: exposed to the dying alongside sweets and pleasant games until all association between them is severed. Grief is treated as a failure of conditioning. The dying are given soma in sufficient quantities that the final transition is, reportedly, quite pleasant. No one is left to mourn. There is no one left who knows how.',
+    evidenceType: 'Living Memory & Material',
+    evidence: [
+      'John\'s witness: John watches Linda die in the Park Lane Hospital for the Dying, surrounded by death-conditioned children eating sweets. His grief and their incomprehension are placed in direct juxtaposition — two irreconcilable relationships to the same event.',
+      'Phosphorus recovery: "When a human body is cremated... we recover about a kilo and a half per adult corpse." Death has been converted entirely into resource. The accounting is the evidence — there is no other language for it.',
+      'The conditioning programme: Children are brought to the dying ward with chocolate éclair to be death-conditioned. The programme\'s careful design — its existence as a designed intervention — is evidence that the original relationship to death was strong enough to require active, sustained dismantling.'
+    ],
+    reflectionQ: 'The novel gives us two accounts of Linda\'s death: John\'s (grief, meaning, witness) and the nurse\'s (procedure, distraction, schedule). Both are accurate descriptions of the same event. On what basis do you decide which to trust — and what does that decision reveal about how you reconstruct the past?',
+    connections: [
+      { id: 'emotion', title: 'Emotion', desc: 'John\'s grief at Linda\'s death is the novel\'s most direct demonstration of what managed emotion has replaced.' },
+      { id: 'marriage', title: 'Marriage', desc: 'The bonds that marriage created — obligation, loyalty, grief — are precisely what the death-conditioning programme dismantles.' }
+    ],
+    icon: `<svg viewBox="0 0 26 38" width="26" height="38"><path d="M4,2 L22,2 L13,19 L22,36 L4,36 L13,19 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="2" x2="22" y2="2" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="36" x2="22" y2="36" stroke="currentColor" stroke-width="1.5"/><ellipse cx="13" cy="30" rx="7" ry="3" fill="currentColor" opacity="0.35"/></svg>`
+  }
+];
+
+/* ─── State ─────────────────────────────────────────────────────── */
+
+let visited   = JSON.parse(localStorage.getItem('bnw_visited') || '[]');
+let currentId = null;
+
+/* ─── Boot ──────────────────────────────────────────────────────── */
+
+function boot() {
+  buildGrid();
+  updateProgress();
+  checkWhatRemains();
+}
+
+/* ─── Grid ──────────────────────────────────────────────────────── */
+
+function buildGrid() {
+  const grid = document.getElementById('exhibit-grid');
+  grid.innerHTML = '';
+  EXHIBITS.forEach(ex => {
+    const seen = visited.includes(ex.id);
+    const card = document.createElement('div');
+    card.className = 'exhibit-card' + (seen ? ' visited' : '');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.onclick = () => openExhibit(ex.id);
+    card.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') openExhibit(ex.id); };
+    card.innerHTML =
+      '<span class="card-icon">' + ex.icon + '</span>' +
+      '<div class="card-number">Exhibit ' + ex.num +
+        '<span class="card-examined">[ examined ]</span>' +
+      '</div>' +
+      '<div class="card-title">' + ex.title + '</div>';
+    grid.appendChild(card);
+  });
+}
+
+function updateProgress() {
+  const n = visited.length;
+  document.getElementById('visited-count').textContent = n;
+  document.getElementById('progress-bar').style.width = (n / 10 * 100) + '%';
+}
+
+function checkWhatRemains() {
+  if (visited.length === 10) {
+    document.getElementById('what-remains').style.display = 'block';
+  }
+}
+
+/* ─── Entry → Archive ───────────────────────────────────────────── */
+
+function enterArchive() {
+  const entry   = document.getElementById('entry-screen');
+  const archive = document.getElementById('archive-screen');
+
+  entry.classList.add('dissolving');
+
+  setTimeout(() => {
+    entry.classList.add('screen-hidden');
+    archive.classList.remove('screen-hidden');
+    archive.classList.add('fade-in');
+    document.body.style.background = 'var(--ar-bg)';
+    window.scrollTo(0, 0);
+  }, 1500);
+}
+
+/* ─── Archive → Exhibit ─────────────────────────────────────────── */
+
+function openExhibit(id) {
+  const ex = EXHIBITS.find(e => e.id === id);
+  if (!ex) return;
+  currentId = id;
+
+  if (!visited.includes(id)) {
+    visited.push(id);
+    localStorage.setItem('bnw_visited', JSON.stringify(visited));
+    updateProgress();
+    buildGrid();
+    checkWhatRemains();
+  }
+
+  // Header
+  document.getElementById('ex-accession').textContent  = 'Exhibit ' + ex.num;
+  document.getElementById('ex-title').textContent      = ex.title;
+  document.getElementById('ex-subtitle').textContent   = ex.subtitle;
+
+  // Artifact
+  document.getElementById('ex-artifact-svg').innerHTML    = ARTIFACT_SVGS[ex.id] || '';
+  document.getElementById('ex-artifact-caption').textContent = ex.artifactCaption || '';
+
+  // Connections
+  const connDiv = document.getElementById('ex-connections');
+  connDiv.innerHTML = ex.connections.map(c =>
+    '<div class="connection-item" onclick="openExhibit(\'' + c.id + '\')">' +
+      '<span class="connection-arrow">→</span>' +
+      '<div class="connection-body">' +
+        '<span class="connection-title">' + c.title + '</span>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+
+  document.getElementById('ex-display').textContent = ex.analysis || '';
+
+  updateNavButtons();
+
+  document.getElementById('archive-screen').classList.add('screen-hidden');
+  const exScreen = document.getElementById('exhibit-screen');
+  exScreen.classList.remove('screen-hidden');
+  exScreen.classList.remove('slide-in');
+  void exScreen.offsetWidth;
+  exScreen.classList.add('slide-in');
+  window.scrollTo(0, 0);
+}
+
+/* ─── Exhibit → Archive ─────────────────────────────────────────── */
+
+function returnToArchive() {
+  document.getElementById('exhibit-screen').classList.add('screen-hidden');
+  const arch = document.getElementById('archive-screen');
+  arch.classList.remove('screen-hidden');
+  arch.classList.remove('fade-in');
+  window.scrollTo(0, 0);
+}
+
+/* ─── Exhibit edit/save ─────────────────────────────────────────── */
+
+
+/* ─── Exhibit traversal ─────────────────────────────────────────── */
+
+function navigateExhibit(dir) {
+  const idx    = EXHIBITS.findIndex(e => e.id === currentId);
+  const target = EXHIBITS[idx + dir];
+  if (target) openExhibit(target.id);
+}
+
+function updateNavButtons() {
+  const idx  = EXHIBITS.findIndex(e => e.id === currentId);
+  const prev = document.getElementById('nav-prev');
+  const next = document.getElementById('nav-next');
+  prev.classList.toggle('nav-btn-invisible', idx === 0);
+  next.classList.toggle('nav-btn-invisible', idx === EXHIBITS.length - 1);
+  document.getElementById('nav-position').textContent = (idx + 1) + ' / ' + EXHIBITS.length;
+}
+
+/* ─── Keyboard shortcuts ────────────────────────────────────────── */
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('exhibit-screen').classList.contains('screen-hidden')) return;
+  if (e.key === 'Escape')     returnToArchive();
+  if (e.key === 'ArrowRight') navigateExhibit(1);
+  if (e.key === 'ArrowLeft')  navigateExhibit(-1);
+});
+
+/* ─── Run ───────────────────────────────────────────────────────── */
+
+boot();
+
+</script>
+
+
+
+</body>
+</html>
