@@ -114,8 +114,7 @@ body {
   font-size: clamp(1.6rem, 5vw, 3rem);
   font-weight: 200; letter-spacing: 0.45em;
   text-transform: uppercase; color: var(--ws-text);
-  text-align: center; margin-bottom: 0.4rem;
-  animation: mottoGlitch 8s infinite 2s;
+  text-align: center; margin-bottom: 0;
 }
 
 @keyframes mottoGlitch {
@@ -129,6 +128,26 @@ body {
 }
 
 .ws-motto-dot { color: var(--ws-accent); }
+
+.ws-project-title {
+  font-family: Georgia, serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: normal;
+  font-style: italic;
+  color: var(--ws-muted);
+  margin-top: 0.75rem;
+  letter-spacing: 0.01em;
+}
+
+.ws-byline {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ws-muted);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
 
 .ws-year {
   font-size: 0.65rem; letter-spacing: 0.3em;
@@ -787,30 +806,9 @@ body {
 ══════════════════════════════════════════════════ -->
 <div id="entry-screen" class="screen">
 
-  <div class="ws-seal">
-    <div class="ws-seal-star"></div>
-  </div>
-
-  <h1 class="ws-motto">
-    Community<span class="ws-motto-dot">.</span>&nbsp;
-    Identity<span class="ws-motto-dot">.</span>&nbsp;
-    Stability<span class="ws-motto-dot">.</span>
-  </h1>
-
-  <div class="ws-stats">
-    <div class="ws-stat">
-      <span class="ws-stat-value">0</span>
-      <span class="ws-stat-label">Recorded Incidents</span>
-    </div>
-    <div class="ws-stat">
-      <span class="ws-stat-value">100%</span>
-      <span class="ws-stat-label">Soma Distribution</span>
-    </div>
-    <div class="ws-stat">
-      <span class="ws-stat-value">∞</span>
-      <span class="ws-stat-label">Stability Maintained</span>
-    </div>
-  </div>
+  <h1 class="ws-motto">CLASSICS 43N</h1>
+  <p class="ws-project-title">Project: Archeological Imagination of Brave New World</p>
+  <p class="ws-byline">Saskia Botha</p>
 
   <div class="ws-signal">UNAUTHORISED SIGNAL DETECTED — SECTOR 9</div>
 
